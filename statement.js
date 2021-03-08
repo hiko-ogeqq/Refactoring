@@ -7,17 +7,11 @@ exports.statement = (invoice, plays) => {
     { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format;
 
   for(let perf of invoice.performances){
-    let thisAmount = amountFor(perf);
+    volumeCredits += volumeCreditsFor(perf);
 
-    // ボリューム特典のポイントを加算
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // 喜劇のときは10人に付きさらにポイントを加算
-    if("comedy" === playFor(perf).type){
-      volumeCredits += Math.floor(perf.audience / 5);
-    }
     // 注文の内訳を出力
-    result += `  ${playFor(perf).name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-    totalAmount += thisAmount;
+    result += `  ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
+    totalAmount += amountFor(perf);
 
   }
   result += `Amount owned is ${format(totalAmount/100)}\n`;
@@ -52,5 +46,17 @@ exports.statement = (invoice, plays) => {
 
   function playFor(aPerformance){
     return plays[aPerformance.playID];
+  }
+
+  // ボリューム特典のポイントを加算
+  function volumeCreditsFor(aPerformance){
+    let result = Math.max(aPerformance.audience - 30, 0);
+
+    // 喜劇のときは10人に付きさらにポイントを加算
+    if("comedy" === playFor(aPerformance).type){
+      result += Math.floor(aPerformance.audience / 5);
+    }
+
+    return result;
   }
 };
