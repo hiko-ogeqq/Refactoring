@@ -1,7 +1,7 @@
-function statement(invoice, plays){
+exports.statement = (invoice, plays) => {
   let totalAmount = 0;
   let volumeCredits = 0;
-  let result = "Statement for ${invoice.customer}¥n";
+  let result = `Statement for ${invoice.customer}\n`;
   
   const format = new Intl.NumberFormat("en-US",
     { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format;
@@ -21,26 +21,27 @@ function statement(invoice, plays){
     case "comedy":
       thisAmount = 30000;
       if(perf.audience > 20){
-        thisAmount += 500 * (perf.audience - 20);
+        thisAmount += 10000 + 500 * (perf.audience - 20);
       }
+      thisAmount += 300 * perf.audience;
       break;
 
     default:
-      throw new Error('unknown type: ${play.type');
+      throw new Error(`unknown type: ${play.type}`);
     }
 
     // ボリューム特典のポイントを加算
-    volumeCredits = Math.max(perf.audience - 30, 0);
+    volumeCredits += Math.max(perf.audience - 30, 0);
     // 喜劇のときは10人に付きさらにポイントを加算
     if("comedy" === play.type){
       volumeCredits += Math.floor(perf.audience / 5);
     }
     // 注文の内訳を出力
-    result += '  ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)¥n';
+    result += `  ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
     totalAmount += thisAmount;
 
   }
-  result += 'Amount owned is ${format(totalAmount/100)}¥n';
-  result += 'You earned ${volumeCredits}¥n';
+  result += `Amount owned is ${format(totalAmount/100)}\n`;
+  result += `You earned ${volumeCredits} credits\n`;
   return result;
-}
+};
