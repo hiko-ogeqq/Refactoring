@@ -15,14 +15,6 @@ exports.createStatementData = (invoice, plays) => {
     return result;
   }
 
-  function amountFor(aPerformance){
-    return new PerformanceCalculator(aPerformance, playFor(aPerformance)).amount;
-  }
-
-  function volumeCreditsFor(aPerformance){
-    return new PerformanceCalculator(aPerformance, playFor(aPerformance)).volumeCredits;
-  }
-
   function totalVolumeCredits(data){
     return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
   }
@@ -52,7 +44,7 @@ class PerformanceCalculator {
   }
 
   get amount(){
-    throw new Error("サブクラスの責務");
+    throw new Error("subclass responsibility");
   }
 
   get volumeCredits(){
